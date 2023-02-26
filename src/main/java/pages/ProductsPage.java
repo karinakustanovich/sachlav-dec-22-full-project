@@ -5,10 +5,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
+import static org.testng.Assert.assertEquals;
+
 
 import java.util.List;
 
-public class ProductsPage extends BasePage {
+
+
+public class ProductsPage extends CommonElements {
 
     @FindBy(css = "[class=\"shopping_cart_badge\"]")
     private WebElement shoppingCartBadge;
@@ -16,17 +20,14 @@ public class ProductsPage extends BasePage {
     @FindAll(@FindBy(css = "[class=\"inventory_item_description\"]"))
     private List<WebElement> itemDescriptionElements;
 
-    @FindBy(css = ".title")
-    private WebElement title;
 
 
     public ProductsPage(WebDriver driver) {
         super(driver);
     }
 
-    public void chooseProduct(String... products) {
+    public int chooseProduct(String... products) {
 
-        System.out.println("products.length = " + products.length);
         for (String product : products) {
             for (WebElement element : itemDescriptionElements) {
                 WebElement title = element.findElement(By.cssSelector("[class=\"inventory_item_name\"]"));
@@ -36,18 +37,17 @@ public class ProductsPage extends BasePage {
                 }
             }
         }
+
+        return products.length;
     }
 
     public void validateNumberOfAddedItems(int numberOfAddedItems) {
-        if (Integer.parseInt(getElementText(shoppingCartBadge)) == numberOfAddedItems) {
-            System.out.println("Correct! :)");
-        } else {
-            System.out.println("Incorrect... :(");
-        }
+        assertEquals(Integer.parseInt(getElementText(shoppingCartBadge)), numberOfAddedItems);
     }
 
-    public String getPageTitle() {
-        return getElementText(title);
+
+    public void goToCart() {
+        clickElement(shoppingCartBadge);
     }
 
 
